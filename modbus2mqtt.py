@@ -60,6 +60,7 @@ parser.add_argument('--mqtt-tls-version', default=None, help='TLS protocol versi
 parser.add_argument('--rtu',help='pyserial URL (or port name) for RTU serial port')
 parser.add_argument('--rtu-baud', default='19200', type=int, help='Baud rate for serial port. Defaults to 19200')
 parser.add_argument('--rtu-parity', default='even', choices=['even','odd','none'], help='Parity for serial port. Defaults to even')
+parser.add_argument('--rtu-handle-local-echo', action='store_true', help='Handle local echo of the USB-to-RS485 adaptor')
 parser.add_argument('--tcp', help='Act as a Modbus TCP master, connecting to host TCP')
 parser.add_argument('--tcp-port', default='502', type=int, help='Port for MODBUS TCP. Defaults to 502')
 parser.add_argument('--set-modbus-timeout',default='1',type=float, help='Response time-out for MODBUS devices')
@@ -615,7 +616,7 @@ if args.rtu:
     if args.rtu_parity == "even":
             parity = "E"
 
-    master = SerialModbusClient(method="rtu", port=args.rtu, stopbits = 1, bytesize = 8, parity = parity, baudrate = int(args.rtu_baud), timeout=args.set_modbus_timeout)
+    master = SerialModbusClient(method="rtu", port=args.rtu, stopbits = 1, bytesize = 8, parity = parity, handle_local_echo = bool(args.rtu_handle_local_echo), baudrate = int(args.rtu_baud), timeout=args.set_modbus_timeout)
 
 elif args.tcp:
     master = TCPModbusClient(args.tcp, args.tcp_port,client_id="modbus2mqtt", clean_session=False)
