@@ -305,7 +305,29 @@ class dataTypes:
             self.regAmount=1         
             self.parse=self.parsebool
             self.combine=self.combinebool
-    
+        elif conf == "hex20":
+            self.regAmount=10
+            self.stringLength=40
+            self.parse=self.parsehex20
+            self.combine=self.combinehex20
+
+    def parsehex20(self, msg): # from str to registers
+        out=[]
+        for i in range((len(msg)+3) // 4):
+            o = i*4
+            bytecode = ''.join([msg[o:o+2], msg[o+2:o+4]])
+            b = int(bytecode, 16)
+            out.append(b)
+        return out
+
+    def combinehex20(self, val): # from registers to str
+        out=""
+        fhex = lambda v: '{:02X}'.format(v)
+        for x in val:
+            out+=fhex(x>>8)
+            out+=fhex(x&0x00FF)
+        return out
+
     def parsebool(self,payload):
         if payload == 'True' or payload == 'true' or payload == '1' or payload == 'TRUE':
             value = True
